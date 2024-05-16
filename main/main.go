@@ -46,7 +46,11 @@ func main() {
 		if validcolor && len(arg1) >= 9 {
 
 			file := os.Args[3]
-			filename, _ := os.ReadFile(file)
+			filename, err := os.ReadFile(file)
+			if err != nil {
+				fmt.Println("error : file not found.")
+				return
+			}
 			lines := strings.Split(string(filename), "\n")
 			input := os.Args[2]
 			words := strings.Split(input, "\\n")
@@ -85,7 +89,11 @@ func main() {
 	} else if len(os.Args) == 5 {
 		if validcolor && len(arg1) >= 9 {
 			file := os.Args[4]
-			filename, _ := os.ReadFile(file)
+			filename, err := os.ReadFile(file)
+			if err != nil {
+				fmt.Println("error : file not found.")
+				return
+			}
 			letterarg := os.Args[2]
 			lines := strings.Split(string(filename), "\n")
 			input := os.Args[3]
@@ -136,7 +144,47 @@ func main() {
 		}
 	} else if len(os.Args) == 3 {
 		if (validcolor || validoutput) && len(arg1) >= 9 {
-			fmt.Println("Usage: go run . [OPTION] [STRING] [BANNER]\n\nEX: go run . --output=<fileName.txt> something standard")
+			file := "standard.txt"
+			filename, err := os.ReadFile(file)
+			if err != nil {
+				fmt.Println("error : file not found.")
+				return
+			}
+			lines := strings.Split(string(filename), "\n")
+			input := os.Args[2]
+			words := strings.Split(input, "\\n")
+			if len(input) == 0 {
+				return
+			}
+			/// to display correctly in the file
+			for a := 0; a < len(words); a++ {
+				for i := 1; i < 9; i++ {
+					endLine := false
+
+					for _, char := range words[a] {
+						s := int((char - 32) * 9)
+						asciiLine := lines[s+i]
+						result = append(result, colors[color]+asciiLine)
+						endLine = true
+					}
+					if endLine {
+						result = append(result, "\n")
+					}
+				}
+
+				newLineCount := strings.Count(input, "\\n")
+				// fmt.Print(words)
+				if count < newLineCount && words[a] == "" {
+					result = append(result, "\n")
+					count++
+				}
+			}
+
+			// print result
+			for i := 0; i < len(result); i++ {
+				fmt.Print(result[i])
+			}
+
 		} else if !validcolor {
 			p.PrintLines(os.Args[2])
 		}

@@ -13,7 +13,11 @@ func PrintLines(argy string) {
 
 	input := os.Args[1]
 
-	file, _ := os.ReadFile(argy)
+	file, err := os.ReadFile(argy)
+	if err != nil {
+		fmt.Println("error : file not found.")
+		return
+	}
 	lines := strings.Split(string(file), "\n")
 	words := strings.Split(input, "\\n")
 	newLineCount := strings.Count(input, "\\n")
